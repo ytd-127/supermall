@@ -1,5 +1,5 @@
 {
-  "name": "supermall1",
+  "name": "supermall",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -14,5 +14,17 @@
     "@vue/cli-plugin-babel": "^4.5.0",
     "@vue/cli-service": "^4.5.0",
     "vue-template-compiler": "^2.6.11"
-  }
+  },
+  "description": "```\r npm install\r ```",
+  "main": "babel.config.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ytd-127/supermall.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ytd-127/supermall/issues"
+  },
+  "homepage": "https://github.com/ytd-127/supermall#readme"
 }
