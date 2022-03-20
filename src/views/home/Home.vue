@@ -5,41 +5,106 @@
     </nav-bar>
     <home-swiper :banner="banner"></home-swiper>
     <recommend-view :recommend="recommend"/>
+    <feature-view />
+    <tab-control class="tab-control" :titles="['流行','新款','精选']"/>
+    <goods-list :goods="goods['pop'].list" />
+
+
+
+
+    <ul>
+      <li>aaa</li>
+      <li>aaa</li>
+      <li>aaa</li>
+      <li>aaa</li>
+      <li>aaa</li>
+      <li>aaa</li>
+      <li>aaa</li>
+      <li>aaa</li>
+      <li>aaa</li>
+      <li>aaa</li>
+      <li>aaa</li>
+      <li>aaa</li>
+      <li>aaa</li>
+      <li>aaa</li>
+      <li>aaa</li>
+      <li>aaa</li>
+      <li>aaa</li>
+      <li>aaa</li>
+      <li>aaa</li>
+      <li>aaa</li>
+      <li>aaa</li>
+      <li>aaa</li>
+      <li>aaa</li>
+      <li>aaa</li>
+    </ul>
   </div>
 </template>
 
 <script>
-  import NavBar from "components/common/navbar/NavBar"
+
   import HomeSwiper from "./childComps/HomeSwiper.vue"
   import RecommendView from "./childComps/RecommendView.vue"
+  import FeatureView from "./childComps/FeatureView.vue"
 
-  import {getHomeMultidata} from "network/Home"
+  import NavBar from "components/common/navbar/NavBar"
+  import TabControl from "components/content/tabControl/tabControl.vue"
+  import GoodsList from "components/content/goods/GoodsList"
+
+  import {getHomeMultidata,getHomeGoods} from "network/Home"
 
   export default {
     name: "Home",
     components:{
       NavBar,
       HomeSwiper,
-      RecommendView
+      RecommendView,
+      FeatureView,
+      TabControl,
+      GoodsList
     },
     data(){
       return {
         banner:[],
-        recommend:[]
+        recommend:[],
+        goods:{
+          'pop' : { page : 0, list : [] },
+          'new': { page : 0, list : [] },
+          'sell': { page : 0, list : [] },
+        }
       }
     },
     created(){
-      getHomeMultidata().then(res=>{
-        this.banner = res.data.banner.list;
-        this.recommend = res.data.recommend.list;
+      this.getHomeMultidata();
+      
+      this.getHomeGoods('pop');
+      this.getHomeGoods('new');
+      this.getHomeGoods('sell');
+    },
+    methods:{
+      getHomeMultidata() {
+        getHomeMultidata().then(res => {
+          // this.result = res;
+          this.banner = res.data.banner.list;
+          this.recommend = res.data.recommend.list;
+        })
+      },
+      getHomeGoods(type){
+        getHomeGoods().then(res=>{
+          const page = this.goods[type].page +1
+          getHomeGoods(type,page).then(res =>{
+            this.goods[type].list.push(...res.data.list)
+            this.goods[type].page += 1
+          })
       })
+      }
     }
   }
 </script>
 
 <style scoped>
   #home {
-    /*padding-top: 44px;*/
+    padding-top: 44px;
     height: 100vh;
     position: relative;
   }
@@ -63,7 +128,6 @@
 
   .content {
     overflow: hidden;
-
     position: absolute;
     top: 44px;
     bottom: 49px;
@@ -71,9 +135,4 @@
     right: 0;
   }
 
-  /*.content {*/
-    /*height: calc(100% - 93px);*/
-    /*overflow: hidden;*/
-    /*margin-top: 44px;*/
-  /*}*/
 </style>
