@@ -26,5 +26,6 @@ export default {
 </script>
 
 <style>
-
+.goods{display: flex;width: 100vw;overflow: hidden;flex-wrap: wrap;justify-content: space-between;padding: 0 2%;box-sizing: border-box;}
+.goods-item{width: 49%;}
 </style>
