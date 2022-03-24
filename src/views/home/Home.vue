@@ -3,7 +3,7 @@
     <nav-bar class="home-nav">
       <div slot="center">购物街</div>
     </nav-bar>
-    <scroll class="content">
+    <scroll class="content" ref="scroll" :probe-type="3" @scroll="contentScroll" :pull-up-load="true">
       <home-swiper :banner="banner"></home-swiper>
       <recommend-view :recommend="recommend"/>
       <feature-view />
@@ -11,7 +11,7 @@
       <goods-list :goods="showGoods" />
     </scroll>
 
-    <back-top @click="backClick"/>
+    <back-top @click.native="backClick" v-show="isShow"/>
   </div>
 </template>
 
@@ -50,7 +50,8 @@
           'new': { page : 0, list : [] },
           'sell': { page : 0, list : [] },
         },
-        currentType:'pop'
+        currentType:'pop',
+        isShow:false,
       }
     },
     created(){
@@ -81,7 +82,10 @@
         }
       },
       backClick(){
-        scrollTo(0,0)
+        this.$refs.scroll.scrollTo(0,0)
+      },
+      contentScroll(position){
+        this.isShow =  (-position.y)>1000;
       },
       // ********** 网络请求 ************
       getHomeMultidata() {
