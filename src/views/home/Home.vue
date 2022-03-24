@@ -3,41 +3,15 @@
     <nav-bar class="home-nav">
       <div slot="center">购物街</div>
     </nav-bar>
-    <home-swiper :banner="banner"></home-swiper>
-    <recommend-view :recommend="recommend"/>
-    <feature-view />
-    <tab-control class="tab-control" :titles="['流行','新款','精选']" @tabClick="tabClick"/>
-    <goods-list :goods="showGoods" />
+    <scroll class="content">
+      <home-swiper :banner="banner"></home-swiper>
+      <recommend-view :recommend="recommend"/>
+      <feature-view />
+      <tab-control class="tab-control" :titles="['流行','新款','精选']" @tabClick="tabClick"/>
+      <goods-list :goods="showGoods" />
+    </scroll>
 
-
-
-
-    <ul>
-      <li>aaa</li>
-      <li>aaa</li>
-      <li>aaa</li>
-      <li>aaa</li>
-      <li>aaa</li>
-      <li>aaa</li>
-      <li>aaa</li>
-      <li>aaa</li>
-      <li>aaa</li>
-      <li>aaa</li>
-      <li>aaa</li>
-      <li>aaa</li>
-      <li>aaa</li>
-      <li>aaa</li>
-      <li>aaa</li>
-      <li>aaa</li>
-      <li>aaa</li>
-      <li>aaa</li>
-      <li>aaa</li>
-      <li>aaa</li>
-      <li>aaa</li>
-      <li>aaa</li>
-      <li>aaa</li>
-      <li>aaa</li>
-    </ul>
+    <back-top @click="backClick"/>
   </div>
 </template>
 
@@ -51,6 +25,8 @@
   import TabControl from "components/content/tabControl/tabControl.vue"
   import GoodsList from "components/content/goods/GoodsList"
 
+  import Scroll from 'components/common/scroll/Scroll'
+  import BackTop from 'components/content/backTop/BackTop'
   import {getHomeMultidata,getHomeGoods} from "network/Home"
 
   export default {
@@ -61,7 +37,9 @@
       RecommendView,
       FeatureView,
       TabControl,
-      GoodsList
+      GoodsList,
+      Scroll,
+      BackTop,
     },
     data(){
       return {
@@ -77,7 +55,6 @@
     },
     created(){
       this.getHomeMultidata();
-      
       this.getHomeGoods('pop');
       this.getHomeGoods('new');
       this.getHomeGoods('sell');
@@ -103,7 +80,9 @@
             break
         }
       },
-
+      backClick(){
+        scrollTo(0,0)
+      },
       // ********** 网络请求 ************
       getHomeMultidata() {
         getHomeMultidata().then(res => {
