@@ -3,7 +3,7 @@
     <nav-bar class="home-nav">
       <div slot="center">购物街</div>
     </nav-bar>
-    <scroll class="content" ref="scroll" :probe-type="3" @scroll="contentScroll" :pull-up-load="true">
+    <scroll class="content" ref="scroll" :probe-type="3" @scroll="contentScroll" :pull-up-load="true" @pullingUp="loadMore">
       <home-swiper :banner="banner"></home-swiper>
       <recommend-view :recommend="recommend"/>
       <feature-view />
@@ -59,11 +59,19 @@
       this.getHomeGoods('pop');
       this.getHomeGoods('new');
       this.getHomeGoods('sell');
+
+
     },
     computed:{
       showGoods(){
         return this.goods[this.currentType].list
       }
+    },
+    mounted(){
+      const refresh = this.debounce(this.$refs.scroll.refresh,200)
+        this.$bus.$on('imagesLoad',()=>{
+          refresh();
+      })
     },
     methods:{
       // ******** 监听事件 ********
@@ -86,6 +94,21 @@
       },
       contentScroll(position){
         this.isShow =  (-position.y)>1000;
+        
+      },
+      loadMore(){
+        console.log("上拉加载更多");
+        this.getHomeGoods(this.currentType);
+        this.$refs.scroll.scroll.refresh();
+      },
+      debounce(func, delay) {
+        let timer = null
+        return function (...args) {
+          if (timer) clearTimeout(timer)
+          timer = setTimeout(() => {
+            func.apply(this, args)
+          }, delay)
+        }
       },
       // ********** 网络请求 ************
       getHomeMultidata() {
@@ -102,7 +125,7 @@
             this.goods[type].list.push(...res.data.list)
             this.goods[type].page += 1
           })
-      })
+      }) 
       }
     }
   }

@@ -37,7 +37,7 @@ export default {
         })
 
         this.scroll.on('pullingUp',()=>{
-            console.log('上拉加载更多');
+            this.$emit('pullingUp')
             setTimeout(() => {
                 this.scroll.finishPullUp()
             },2000)
@@ -46,6 +46,10 @@ export default {
     methods:{
         scrollTo(x,y,time=300){
             this.scroll.scrollTo(x,y,time)
+        },
+        refresh(){
+            console.log("aa");
+            this.scroll && this.scroll.refresh();
         }
     }
 }
