@@ -121,7 +121,6 @@
 
     },
     mounted(){
-      console.log(document.querySelector('.wrapper-a'));
       this.scroll = new BScroll('.wrapper-a',{
         probeType:3,
         pullUpLoad:true,

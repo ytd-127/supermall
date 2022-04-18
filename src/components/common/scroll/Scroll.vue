@@ -48,7 +48,6 @@ export default {
             this.scroll.scrollTo(x,y,time)
         },
         refresh(){
-            console.log("aa");
             this.scroll && this.scroll.refresh();
         }
     }

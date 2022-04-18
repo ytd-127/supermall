@@ -1,17 +1,21 @@
 <template>
   <div id="home">
-    <nav-bar class="home-nav">
-      <div slot="center">购物街</div>
-    </nav-bar>
-    <scroll class="content" ref="scroll" :probe-type="3" @scroll="contentScroll" :pull-up-load="true" @pullingUp="loadMore">
-      <home-swiper :banner="banner"></home-swiper>
-      <recommend-view :recommend="recommend"/>
-      <feature-view />
-      <tab-control class="tab-control" :titles="['流行','新款','精选']" @tabClick="tabClick"/>
-      <goods-list :goods="showGoods" />
-    </scroll>
 
-    <back-top @click.native="backClick" v-show="isShow"/>
+      <nav-bar class="home-nav">
+        <div slot="center">购物街</div>
+      </nav-bar>
+      <tab-control class="tab-control tab1" :titles="['流行','新款','精选']" @tabClick="tabClick" ref="TabControl1" v-show="isTabShow"/>
+      <scroll class="content" ref="scroll" :probe-type="3" @scroll="contentScroll" :pull-up-load="true" @pullingUp="loadMore">
+        <home-swiper :banner="banner" @swiperImagesLoad="swiperImagesLoad"></home-swiper>
+        <recommend-view :recommend="recommend"/>
+        <feature-view />
+        <tab-control class="tab-control" :titles="['流行','新款','精选']" @tabClick="tabClick" ref="TabControl2"/>
+        <goods-list :goods="showGoods" />
+      </scroll>
+
+      <back-top @click.native="backClick" v-show="isShow"/>
+    <keep-alive>
+    </keep-alive>
   </div>
 </template>
 
@@ -52,6 +56,9 @@
         },
         currentType:'pop',
         isShow:false,
+        tabOffsetTop:0,
+        isTabShow:false,
+        saveY:0
       }
     },
     created(){
@@ -59,8 +66,14 @@
       this.getHomeGoods('pop');
       this.getHomeGoods('new');
       this.getHomeGoods('sell');
-
-
+    },
+    activated() {
+      this.$refs.scroll.refresh()
+      this.$refs.scroll.scrollTo(0, this.saveY, 0)
+      
+    },
+    deactivated() {
+      this.saveY = this.$refs.scroll.scroll.y;
     },
     computed:{
       showGoods(){
@@ -68,7 +81,7 @@
       }
     },
     mounted(){
-      const refresh = this.debounce(this.$refs.scroll.refresh,200)
+      const refresh = this.debounce(this.$refs.scroll.refresh,200);
         this.$bus.$on('imagesLoad',()=>{
           refresh();
       })
@@ -88,6 +101,8 @@
             this.currentType = 'sell'
             break
         }
+        this.$refs.TabControl1.currentIndex = index;
+        this.$refs.TabControl2.currentIndex = index;
       },
       backClick(){
         this.$refs.scroll.scrollTo(0,0)
@@ -95,6 +110,7 @@
       contentScroll(position){
         this.isShow =  (-position.y)>1000;
         
+        this.isTabShow = (-position.y) > this.tabOffsetTop
       },
       loadMore(){
         console.log("上拉加载更多");
@@ -110,6 +126,12 @@
           }, delay)
         }
       },
+      swiperImagesLoad(){
+          this.tabOffsetTop = this.$refs.TabControl2.$el.offsetTop;
+      },
+
+      
+
       // ********** 网络请求 ************
       getHomeMultidata() {
         getHomeMultidata().then(res => {
@@ -149,7 +171,7 @@
     top: 0;
     z-index: 9;
   }
-
+  .tab1{position:fixed;}
   .tab-control {
     position: sticky;
     top: 0px;
